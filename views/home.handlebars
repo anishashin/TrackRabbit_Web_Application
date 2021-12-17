@@ -1,0 +1,80 @@
+<div class="container mt-5 col-10">
+    <h1 class="text-center">Welcome to TrackRabbit!</h1>
+    <main>
+        <div class="row mt-5">
+            <div class="col px-5">
+                <h2>Submit New Data</h2>
+                <form action="/" method="POST">
+                    <label class="form-label">Distance</label>
+                    <div class="mb-3">
+                        <select class="form-select" name="distance">
+                            <option selected disabled hidden>Select a distance</option>
+                            <option value="60">60 meters</option>
+                            <option value="100">100 meters</option>
+                            <option value="110">110 meters</option>
+                            <option value="200">200 meters</option>
+                            <option value="400">400 meters</option>
+                            <option value="800">800 meters</option>
+                            <option value="1500">1500 meters</option>
+                            <option value="3000">3000 meters</option>
+                            <option value="5000">5000 meters</option>
+                            <option value="10000">10000 meters</option>
+                        </select>
+                    </div>
+
+                    <label class="form-label">Time</label>
+                    <div class="input-group mb-3">
+                        <input type="number" class="form-control" id="hours" name="hours" aria-label="hours" value="{{speedInfo.hours}}">
+                        <span class="input-group-text">hours</span>
+
+                        <input type="number" class="form-control" id="minutes" name="minutes" aria-label="minutes" value="{{speedInfo.minutes}}">
+                        <span class="input-group-text">minutes</span>
+
+                        <input type="number" class="form-control" id="seconds" name="seconds" aria-label="seconds" value="{{speedInfo.seconds}}">
+                        <span class="input-group-text">seconds</span>
+                    </div>
+
+                    <label id="error">{{error}}</label>
+                    
+                    <div class="d-grid gap-2 mt-2">
+                        <button type="submit" class="btn btn-primary text-center">Submit</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col px-5">
+                <h2>View Submitted Data</h2>
+                <form>
+                    <fieldset disabled>
+                        <label for="submittedDistance" class="form-label">Distance</label>
+                        <div class="input-group mb-3">
+                            <input type="number" class="form-control" id="submittedDistance" value="{{distance}}">
+                            <span class="input-group-text">meters</span>
+                        </div>
+
+                        <label class="form-label">Time</label>
+                        <div class="input-group mb-3">
+                            <input type="number" class="form-control" id="submittedHours" aria-label="submittedHours" value="{{hours}}">
+                            <span class="input-group-text">hours</span>
+
+                            <input type="number" class="form-control" id="submittedMinutes" aria-label="submittedMinutes" value="{{minutes}}">
+                            <span class="input-group-text">minutes</span>
+
+                            <input type="number" class="form-control" id="submittedSeconds" aria-label="submittedSeconds" value="{{seconds}}">
+                            <span class="input-group-text">seconds</span>
+                        </div>
+                        
+                        <label for="submittedSpeed" class="form-label">Speed</label>
+                        <div class="input-group mb-3">
+                            <input type="number" class="form-control" id="submittedSpeed" value="{{speed}}">
+                            <span class="input-group-text">meters/second</span>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+        <div class="row mt-5 px-5 d-grid gap-2">
+            <button type="button" class="btn btn-success text-center">Start Application</button>
+        </div>
+    </main>
+</div>
