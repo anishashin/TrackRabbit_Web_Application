@@ -3,6 +3,34 @@ const router = express.Router();
 const data = require('../data');
 const homeData = data.home;
 
+router.get('/start', (req, res) => {
+  try {
+    const distance = res.app.get('distance');
+    const hours = res.app.get('hours');
+    const minutes = res.app.get('minutes');
+    const seconds = res.app.get('seconds');
+    const totalSeconds = res.app.get('totalSeconds');
+    const speed = res.app.get('speed');
+
+    const {spawn} = require('child_process');
+    const pythonProcess = spawn('python', ['newlights.py', JSON.stringify({
+      distance: distance,
+      hours: hours,
+      minutes: minutes,
+      seconds: seconds,
+      totalSeconds: totalSeconds,
+      speed: speed})]);
+    pythonProcess.stdout.on('data', function (data) {
+      res.status(200).send(data.toString());
+    });
+  } catch (e) {
+    res.status(500).render('error', {
+      title: 'Error', 
+      error: e
+    });
+  }
+});
+
 router.get('/', async (req, res) => {
   const distance = res.app.get('distance');
   const hours = res.app.get('hours');
