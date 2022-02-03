@@ -132,6 +132,7 @@ def comet_test(comet_length):
 
 test_length=10
 if __name__ == '__main__':
+    print(sys.argv[1])
     strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL, LED_STRIP)
     small_strip = Adafruit_NeoPixel(SLED_COUNT, SLED_PIN, SLED_FREQ_HZ, SLED_DMA, SLED_INVERT, SLED_BRIGHTNESS, SLED_CHANNEL, SLED_STRIP)
     print("Initialized both strips...")
