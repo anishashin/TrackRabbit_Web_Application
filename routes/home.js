@@ -13,13 +13,8 @@ router.get('/start', (req, res) => {
     const speed = res.app.get('speed');
 
     const {spawn} = require('child_process');
-    const pythonProcess = spawn('python', ['newlights.py', JSON.stringify({
-      distance: distance,
-      hours: hours,
-      minutes: minutes,
-      seconds: seconds,
-      totalSeconds: totalSeconds,
-      speed: speed})]);
+    const pythonProcess = spawn('python', ['newlights.py', distance, hours, minutes, 
+    seconds, totalSeconds, speed]);
     pythonProcess.stdout.on('data', function (data) {
       res.status(200).send(data.toString());
     });
