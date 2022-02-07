@@ -1,7 +1,7 @@
 from rpi_ws281x import *
-import datetime
+#import datetime
+#import argparse
 import time
-import argparse
 import sys
 import math
 
@@ -95,22 +95,22 @@ def run(strip1, strip2, distance_m, comet_length, color):
             while cycles<=math.floor(distance_m/comet_length):
                 comet(strip1, color, comet_length)
                 cycles+=1
-                distance_traveled += math.floor(comet_length/30)
+                distance_traveled += math.floor(comet_length/30) #divide by 30 to convert num of lights to a distance in meters
 
         #second case.. we need both strips
-        elif distance_m > 170 and distance_m <= 200:
+        else:
             long_cycles = 0
             short_cycles = 0
 
             while long_cycles<=math.floor(170/comet_length):
                 comet(strip1, color, comet_length)
                 long_cycles+=1
-                distance_traveled += math.floor(comet_length/30)
+                distance_traveled += math.floor(comet_length/30) #divide by 30 to convert num of lights to a distance in meters
 
             while short_cycles<=math.floor((distance_m-170)/comet_length):
                 inv_comet(strip2, color, comet_length)
                 short_cycles+=1
-                distance_traveled += math.floor(comet_length/30)
+                distance_traveled += math.floor(comet_length/30) #divide by 30 to convert num of lights to a distance in meters
 
 def blink_test(strips):
     i=0
@@ -128,9 +128,36 @@ if __name__ == '__main__':
     #command line arguements collected
     distance_m = int(sys.argv[1])
     velocity_mps = float(sys.argv[6])
-    print("desired distance m: " + str(distance_m))
+    
+    # #setup to take in color values once the site can do that...
+    # color_str = str(sys.argv[7])
+    # #apparently in python 3.10 they actually finally added switch cases but im not using it here for the sake of backwards compatability
+    # if color_str == "RED":
+    #     comet_color = RED
+    # elif color_str == "ORANGE":
+    #     comet_color = ORANGE
+    # elif color_str == "YELLOW":
+    #     comet_color = YELLOW
+    # elif color_str == "GREEN":
+    #     comet_color = GREEN
+    # elif color_str == "BLUE":
+    #     comet_color = BLUE
+    # elif color_str == "INDIGO":
+    #     comet_color = INDIGO
+    # elif color_str == "PURPLE":
+    #     comet_color = PURPLE
+    # elif color_str == "WHITE":
+    #     comet_color = WHITE
+    # elif color_str == "BLACK":
+    #     comet_color = BLACK
+    # else:
+    #     comet_color = WHITE #failsafe if something goes wrong itll be white
+    # #we also probably want to make the brightness dynamic as well, maybe give an option 1-10 and correlate it to the 0-255 range
+    
+    print("Desired Distance m: " + str(distance_m))
     print("Desired Velocity m/s: " + str(velocity_mps))
     comet_length = get_comet_length(velocity_mps, cycle_speed)
+    print("The comet will be: " + str(comet_length) + " pixels long.")
 
     #setup and begin strips
     strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL, LED_STRIP)
@@ -153,11 +180,12 @@ if __name__ == '__main__':
     #===THE ACTUAL CALL TO START HAPPENS HERE===#
     print("Running...")
     blink_test([strip, small_strip])
-    #run(strip, small_strip, distance_m, comet_length, WHITE)
+    #run(strip, small_strip, distance_m, comet_length, comet_color)
     #solid(strip, WHITE)
     #===========================================#
 
     #cleanup any leftover lights
+    print("Cleaning up...")
     solid(strip, BLACK)
     solid(small_strip, BLACK)
     print("Done.")
