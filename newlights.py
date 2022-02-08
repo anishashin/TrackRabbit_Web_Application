@@ -1,9 +1,10 @@
 from rpi_ws281x import *
-#import datetime
+import datetime
 #import argparse
 import time
 import sys
 import math
+import csv
 
 #for the longer pcm strand
 LED_COUNT = 150*34
@@ -48,6 +49,28 @@ cycle_speed = .19411 #one cycle takes on average .19411 seconds.. we should prob
 def get_comet_length(velocity, cycle_speed):
     return round(30*velocity*cycle_speed)
 
+def blink_test(strips):
+    i=0
+    while i<=2:
+        if i==0:
+            color = RED
+        elif i == 1:
+            color == ORANGE
+        else:
+            color = GREEN
+
+        for strip in strips:
+            solid(strip, color)
+        time.sleep(.2)
+        for strip in strips:
+            solid(strip, BLACK)
+        time.sleep(.2)
+        i+=1
+        
+def comet_test(strip):
+    while True:
+        comet(strip, WHITE, 40)
+
 #turn an entire strip a solid color.. off is BLACK
 def solid(strip, color):
     for light in range(strip.numPixels()):
@@ -83,51 +106,79 @@ def inv_comet(strip, color, comet_length):
     inv_pos-=comet_length
     strip.show()
     
-def run(strip1, strip2, distance_m, comet_length, color):
-    #we will assume the longer strip is FIRST, only using the short strip when necessary
-    distance_traveled = 0
+def run_for_real(strip1, strip2, distance_m, comet_length, color):
+    global pos
+    global inv_pos
+    print(strip1, strip2, distance_m, comet_length, color)
+    d_to_l = 30*distance_m #total number of lights we need to actually travel
+    total_cycles = math.floor(d_to_l / comet_length) #how many cycles we need to actually do to travel the required distance
+    #keep in mind the first strip is only 34*150=5100 lights long
+    #case 1 we do not need the second strip
+    if d_to_l <= 34*150: #if the number of lights we need to travel is LESS than or equal to that of the first strip (34strips*150lps)
 
-    while distance_traveled < distance_m:
-        #first case... only need the long strip
-        if distance_m <= 170:
-            cycles=0
+        for i in range(total_cycles): #we know that we only need the first strip, so comet_length * #cycles = d_to_l
+            comet(strip1, color, comet_length)
+            print("test")
 
-            while cycles<=math.floor(distance_m/comet_length):
+
+    else: #we require more than one strip, perhaps multiple loops so
+        cycles_passed = 0 #how many cycles have we done so far
+        while cycles_passed < total_cycles: #while there are still cycles to go
+
+            for i in range(math.floor((34*150)/comet_length)): #this part should run at most this many times in a row unless cut off by cycle counter
+                if cycles_passed > total_cycles:
+                    break
                 comet(strip1, color, comet_length)
-                cycles+=1
-                distance_traveled += math.floor(comet_length/30) #divide by 30 to convert num of lights to a distance in meters
+                cycles_passed+=1
+                print("test1")
 
-        #second case.. we need both strips
-        else:
-            long_cycles = 0
-            short_cycles = 0
+                
 
-            while long_cycles<=math.floor(170/comet_length):
-                comet(strip1, color, comet_length)
-                long_cycles+=1
-                distance_traveled += math.floor(comet_length/30) #divide by 30 to convert num of lights to a distance in meters
-
-            while short_cycles<=math.floor((distance_m-170)/comet_length):
+            for j in range(math.floor((6*150)/comet_length)): #this part should run at most this many times in a row unless cut off by cycle counter
+                if cycles_passed > total_cycles:
+                    break
                 inv_comet(strip2, color, comet_length)
-                short_cycles+=1
-                distance_traveled += math.floor(comet_length/30) #divide by 30 to convert num of lights to a distance in meters
+                cycles_passed+=1
+                print("test2")
 
-def blink_test(strips):
-    i=0
-    while i<=3:
-        for strip in strips:
-            solid(strip, RED)
-        time.sleep(.5)
-        for strip in strips:
-            solid(strip, BLACK)
-        time.sleep(.5)
-        i+=1
+                
+
+def automated_test_of_run_for_real(strip1, strip2):
+    print("Begining tests...")
+    tests = [[60, 15], [60, 4], [100, 10], [100, 2], [200, 10], [300, 50]]
+    results = []
+    for i in range(len(tests)):
+        print("test #" + str(i))
+        start_time = datetime.datetime.now()
+        run_for_real(strip1, strip2, tests[i][0], get_comet_length(tests[i][1], cycle_speed), WHITE)
+        end_time = datetime.datetime.now()
+        duration = end_time-start_time
+        temp_dict = {
+            "distance m": tests[i][0],
+            "velocity": tests[i][1],
+            "theoretical time" : tests[i][0]/tests[i][1],
+            "actual time" : duration,
+        }
+        results.append(temp_dict)
+        print(temp_dict)
+    print("Tests complete.")
+    keys = results[0].keys()
+    a_file = open("rfr_tests.csv", "w")
+    dict_writer = csv.DictWriter(a_file, keys)
+    dict_writer.writeheader()
+    dict_writer.writerows(results)
+    a_file.close()
+        
+
   
 if __name__ == '__main__':
     #===SETUP===#
     #command line arguements collected
     distance_m = int(sys.argv[1])
     velocity_mps = float(sys.argv[6])
+    for i in range(len(sys.argv)):
+        print(str(i), str(sys.argv[i]), type(sys.argv[i]))
+    print(distance_m, type(distance_m), velocity_mps, type(velocity_mps))
     
     # #setup to take in color values once the site can do that...
     # color_str = str(sys.argv[7])
@@ -178,10 +229,15 @@ if __name__ == '__main__':
     #===========#
 
     #===THE ACTUAL CALL TO START HAPPENS HERE===#
-    print("Running...")
+    print("Start...")
+    #automated_test_of_run_for_real(strip, small_strip)
     blink_test([strip, small_strip])
-    #run(strip, small_strip, distance_m, comet_length, comet_color)
-    #solid(strip, WHITE)
+    start_time = datetime.datetime.now()
+    run_for_real(strip, small_strip, distance_m, comet_length, WHITE)
+    end_time = datetime.datetime.now()
+    dur = end_time-start_time
+    print("Duration: " + str(dur))
+    print("Done.")
     #===========================================#
 
     #cleanup any leftover lights
