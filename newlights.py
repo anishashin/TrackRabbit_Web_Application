@@ -80,17 +80,23 @@ def solid(strip, color):
 #comet function for main strip, looped through with global variable 
 def comet(strip, color, comet_length):
     global pos
-    
+    print("1")
     if pos>=strip.numPixels()-comet_length:
+        print("2")
         pos=0
         solid(strip, BLACK)
-    
+        print("after solid")
+        
     for light in range(comet_length):
+        print("for loop in comet")
         strip.setPixelColor(pos+light, color)
+        print("first set")
         strip.setPixelColor(pos-1-light, BLACK)
-    
+        print("second set")
+    print("end")        
     pos+=comet_length
     strip.show()
+    print("shown")
 
 #comet function for short strip, looped through with global variable  
 def inv_comet(strip, color, comet_length):
@@ -115,32 +121,35 @@ def run_for_real(strip1, strip2, distance_m, comet_length, color):
     #keep in mind the first strip is only 34*150=5100 lights long
     #case 1 we do not need the second strip
     if d_to_l <= 34*150: #if the number of lights we need to travel is LESS than or equal to that of the first strip (34strips*150lps)
-
+        
+        print("first case")
+        print("1", total_cycles)
+        print("2", type(pos))
+        #print("3", range(total_cycles))
+        #LEFT OFF HERE
         for i in range(total_cycles): #we know that we only need the first strip, so comet_length * #cycles = d_to_l
+            print("heheheh")
             comet(strip1, color, comet_length)
-            print("test")
-
-
+            print("looping first case")
     else: #we require more than one strip, perhaps multiple loops so
         cycles_passed = 0 #how many cycles have we done so far
+        print("second case")
         while cycles_passed < total_cycles: #while there are still cycles to go
-
+            print("while loop")
             for i in range(math.floor((34*150)/comet_length)): #this part should run at most this many times in a row unless cut off by cycle counter
                 if cycles_passed > total_cycles:
                     break
+                print("first for loop")
                 comet(strip1, color, comet_length)
                 cycles_passed+=1
-                print("test1")
-
                 
 
             for j in range(math.floor((6*150)/comet_length)): #this part should run at most this many times in a row unless cut off by cycle counter
                 if cycles_passed > total_cycles:
                     break
+                print("second for loop")
                 inv_comet(strip2, color, comet_length)
                 cycles_passed+=1
-                print("test2")
-
                 
 
 def automated_test_of_run_for_real(strip1, strip2):
@@ -158,6 +167,8 @@ def automated_test_of_run_for_real(strip1, strip2):
             "velocity": tests[i][1],
             "theoretical time" : tests[i][0]/tests[i][1],
             "actual time" : duration,
+            "constant": get_comet_length(tests[i][1], cycle_speed)/(30*tests[i][1]),
+            "comet_length" :get_comet_length(tests[i][1], cycle_speed)
         }
         results.append(temp_dict)
         print(temp_dict)
@@ -230,8 +241,8 @@ if __name__ == '__main__':
 
     #===THE ACTUAL CALL TO START HAPPENS HERE===#
     print("Start...")
-    #automated_test_of_run_for_real(strip, small_strip)
     blink_test([strip, small_strip])
+    #automated_test_of_run_for_real(strip, small_strip)
     start_time = datetime.datetime.now()
     run_for_real(strip, small_strip, distance_m, comet_length, WHITE)
     end_time = datetime.datetime.now()
