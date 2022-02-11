@@ -80,23 +80,15 @@ def solid(strip, color):
 #comet function for main strip, looped through with global variable 
 def comet(strip, color, comet_length):
     global pos
-    print("1")
     if pos>=strip.numPixels()-comet_length:
-        print("2")
         pos=0
         solid(strip, BLACK)
-        print("after solid")
         
     for light in range(comet_length):
-        print("for loop in comet")
         strip.setPixelColor(pos+light, color)
-        print("first set")
-        strip.setPixelColor(pos-1-light, BLACK)
-        print("second set")
-    print("end")        
+        strip.setPixelColor(pos-1-light, BLACK)        
     pos+=comet_length
     strip.show()
-    print("shown")
 
 #comet function for short strip, looped through with global variable  
 def inv_comet(strip, color, comet_length):
@@ -117,30 +109,23 @@ def run_for_real(strip1, strip2, distance_m, comet_length, color):
     global inv_pos
     print(strip1, strip2, distance_m, comet_length, color)
     d_to_l = 30*distance_m #total number of lights we need to actually travel
-    total_cycles = math.floor(d_to_l / comet_length) #how many cycles we need to actually do to travel the required distance
+    total_cycles =int(math.floor(d_to_l / comet_length)) #how many cycles we need to actually do to travel the required distance
     #keep in mind the first strip is only 34*150=5100 lights long
     #case 1 we do not need the second strip
     if d_to_l <= 34*150: #if the number of lights we need to travel is LESS than or equal to that of the first strip (34strips*150lps)
         
-        print("first case")
-        print("1", total_cycles)
-        print("2", type(pos))
-        print("3", str(range(total_cycles)))
-        print("4", str(type(total_cycles)))
         #LEFT OFF HERE
         for i in range(total_cycles): #we know that we only need the first strip, so comet_length * #cycles = d_to_l
-            print("heheheh")
-            comet(strip1, color, comet_length)
-            print("looping first case")
+            comet(strip1, color, int(comet_length))
     else: #we require more than one strip, perhaps multiple loops so
         cycles_passed = 0 #how many cycles have we done so far
-        print("second case")
+
         while cycles_passed < total_cycles: #while there are still cycles to go
-            print("while loop")
+        
             for i in range(math.floor((34*150)/comet_length)): #this part should run at most this many times in a row unless cut off by cycle counter
                 if cycles_passed > total_cycles:
                     break
-                print("first for loop")
+                
                 comet(strip1, color, comet_length)
                 cycles_passed+=1
                 
@@ -148,7 +133,6 @@ def run_for_real(strip1, strip2, distance_m, comet_length, color):
             for j in range(math.floor((6*150)/comet_length)): #this part should run at most this many times in a row unless cut off by cycle counter
                 if cycles_passed > total_cycles:
                     break
-                print("second for loop")
                 inv_comet(strip2, color, comet_length)
                 cycles_passed+=1
                 
