@@ -125,7 +125,8 @@ def run_for_real(strip1, strip2, distance_m, comet_length, color):
         print("first case")
         print("1", total_cycles)
         print("2", type(pos))
-        #print("3", range(total_cycles))
+        print("3", str(range(total_cycles)))
+        print("4", str(type(total_cycles)))
         #LEFT OFF HERE
         for i in range(total_cycles): #we know that we only need the first strip, so comet_length * #cycles = d_to_l
             print("heheheh")
