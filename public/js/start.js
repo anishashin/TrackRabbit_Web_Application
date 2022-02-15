@@ -7,6 +7,7 @@
             beforeSend: function() {
                 $('#start').prop('disabled', true);
                 const timeout = $("#submittedSeconds").val();
+                timeout = parseInt(timeout);
                 console.log(typeof timeout);
                 // setTimeout(function() {
                 //     $('#start').prop('disabled', false);
