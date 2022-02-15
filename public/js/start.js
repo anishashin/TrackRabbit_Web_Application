@@ -4,9 +4,11 @@
             method: 'GET',
             url: '/start',
             contentType: 'application/json',
+            beforeSend: function() {
+                $('#start').prop('disabled', true);
+            }
         };
         $.ajax(requestConfig).then(function(response) {
-            $('#start').prop('disabled', true);
         });
     });
 })(window.jQuery);
