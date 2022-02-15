@@ -6,9 +6,10 @@
             contentType: 'application/json',
             beforeSend: function() {
                 $('#start').prop('disabled', true);
-                setTimeout(function() {
-                    $('#start').prop('disabled', false);
-                }, 5000);
+                console.log(typeof $("#submittedSeconds").val());
+                // setTimeout(function() {
+                //     $('#start').prop('disabled', false);
+                // }, $("#submittedSeconds").val());
             }
         };
         $.ajax(requestConfig).then(function(response) {
