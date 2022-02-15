@@ -6,7 +6,8 @@
             contentType: 'application/json',
             beforeSend: function() {
                 $('#start').prop('disabled', true);
-                console.log(typeof $("#submittedSeconds").val());
+                const timeout = $("#submittedSeconds").val();
+                console.log(typeof timeout);
                 // setTimeout(function() {
                 //     $('#start').prop('disabled', false);
                 // }, $("#submittedSeconds").val());
