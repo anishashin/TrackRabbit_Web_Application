@@ -30,7 +30,7 @@ router.get('/start', (req, res) => {
   }
 });
 
-router.get('/start', (req, res) => {
+router.get('/cancel', (req, res) => {
   try {
     pythonProcess.kill('SIGHUP');
   } catch (e) {
