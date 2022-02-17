@@ -139,31 +139,34 @@ def run_for_real(strip1, strip2, distance_m, comet_length, color):
 
 def automated_test_of_run_for_real(strip1, strip2):
     print("Begining tests...")
-    tests = [[60, 15], [60, 4], [100, 10], [100, 2], [200, 10], [300, 50]]
-    results = []
-    for i in range(len(tests)):
-        print("test #" + str(i))
-        start_time = datetime.datetime.now()
-        run_for_real(strip1, strip2, tests[i][0], get_comet_length(tests[i][1], cycle_speed), WHITE)
-        end_time = datetime.datetime.now()
-        duration = end_time-start_time
-        temp_dict = {
-            "distance m": tests[i][0],
-            "velocity": tests[i][1],
-            "theoretical time" : tests[i][0]/tests[i][1],
-            "actual time" : duration,
-            "constant": get_comet_length(tests[i][1], cycle_speed)/(30*tests[i][1]),
-            "comet_length" :get_comet_length(tests[i][1], cycle_speed)
-        }
-        results.append(temp_dict)
-        print(temp_dict)
-    print("Tests complete.")
-    keys = results[0].keys()
-    a_file = open("rfr_tests.csv", "w")
-    dict_writer = csv.DictWriter(a_file, keys)
-    dict_writer.writeheader()
-    dict_writer.writerows(results)
-    a_file.close()
+    #tests = [[60, 15], [60, 4], [100, 10], [100, 2], [200, 10], [300, 50]]
+    
+    for l in range(5):
+        print("file #:" +str(l))
+        results = []
+        for j in [60, 100, 150, 200, 250, 300]:
+            for k in [1, 2 ,3 ,4 ,5, 10, 12, 14, 16, 18 ,20 ,30, 40, 50]:
+                start_time = datetime.datetime.now()
+                run_for_real(strip1, strip2, j, get_comet_length(k, cycle_speed), WHITE)
+                end_time = datetime.datetime.now()
+                duration = end_time-start_time
+                temp_dict = {
+                    "distance m": j,
+                    "velocity": k,
+                    "theoretical time" : j/k,
+                    "actual time" : duration.total_seconds(),
+                    "constant": get_comet_length(k, cycle_speed)/(30*k),
+                    "comet_length" :get_comet_length(k, cycle_speed)
+                }
+                results.append(temp_dict)
+                print(temp_dict)
+        print("Tests complete.")
+        keys = results[0].keys()
+        a_file = open("rfr_tests"+str(l)+".csv", "w")
+        dict_writer = csv.DictWriter(a_file, keys)
+        dict_writer.writeheader()
+        dict_writer.writerows(results)
+        a_file.close()
         
 
   
