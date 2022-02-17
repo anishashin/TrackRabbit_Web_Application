@@ -6,10 +6,12 @@
             contentType: 'application/json',
             beforeSend: function() {
                 $('#start').prop('disabled', true);
+                $('#submit').prop('disabled', true);
                 let timeout = $("#submittedSeconds").val();
                 timeout = parseInt(timeout) * 1000;
                 setTimeout(function() {
                     $('#start').prop('disabled', false);
+                    $('#submit').prop('disabled', false);
                 }, timeout);
             }
         };
