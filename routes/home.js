@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const data = require('../data');
 const homeData = data.home;
+const {spawn} = require('child_process');
+var pythonProcess;
 
 router.get('/start', (req, res) => {
   try {
@@ -12,8 +14,7 @@ router.get('/start', (req, res) => {
     const totalSeconds = res.app.get('totalSeconds');
     const speed = res.app.get('speed');
 
-    const {spawn} = require('child_process');
-    const pythonProcess = spawn('python', ['newlights.py', distance, hours, minutes, seconds, totalSeconds, speed]);
+    pythonProcess = spawn('python', ['newlights.py', distance, hours, minutes, seconds, totalSeconds, speed]);
     pythonProcess.stderr.on('data', function (data) {
       console.log('stderr:', data.toString());
     });
@@ -21,6 +22,17 @@ router.get('/start', (req, res) => {
       console.log('stdout:', data.toString());
       res.status(200).send(data.toString());
     });
+  } catch (e) {
+    res.status(500).render('error', {
+      title: 'Error', 
+      error: e
+    });
+  }
+});
+
+router.get('/start', (req, res) => {
+  try {
+    pythonProcess.kill('SIGHUP');
   } catch (e) {
     res.status(500).render('error', {
       title: 'Error', 
